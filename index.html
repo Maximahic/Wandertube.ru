@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maxtube · Платформа для того, чтобы ты расслабился</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+
+<!-- САЙДБАР -->
+<div class="sidebar">
+    <div class="sidebar-logo">Max<span>tube</span></div>
+    <div class="sidebar-nav">
+        <div class="nav-item active" onclick="switchSection('news')"><i class="fas fa-newspaper"></i> Рекомендации</div>
+        <div class="nav-item" onclick="switchSection('releases')"><i class="fas fa-album"></i> Мой каталог</div>
+        <div class="nav-item" onclick="switchSection('distribution')"><i class="fas fa-upload"></i> Добавить видео</div>
+        <div class="nav-item" onclick="switchSection('moderation')"><i class="fas fa-shield-alt"></i> Проверка видео</div>
+        <div class="nav-item" onclick="switchSection('adminUsers')"><i class="fas fa-users-cog"></i> Админ-панель</div>
+        <div class="nav-item" onclick="switchSection('statistics')"><i class="fas fa-chart-bar"></i> Статистика/охват</div>
+        <div class="nav-item" onclick="switchSection('contract')"><i class="fas fa-file-contract"></i> Договор</div>
+        <div class="nav-item" onclick="switchSection('support')"><i class="fas fa-headset"></i> Поддержка</div>
+    </div>
+    <div class="sidebar-footer">
+        <div class="user-card" id="sidebarUserCard" onclick="openAuthModal()">
+            <div class="user-avatar">?</div>
+            <div>
+                <div class="user-name">Гость</div>
+                <div class="user-email">Не авторизован</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ОСНОВНОЙ КОНТЕНТ -->
+<div class="main-wrapper">
+    <header class="main-header">
+        <span style="color:#fff;font-weight:700;">Max<span style="color:#7c3aed;">tube</span></span>
+        <button class="btn" id="headerLoginBtn" onclick="openAuthModal()">Вход</button>
+    </header>
+
+    <main class="main-content">
+        <!-- Рекомендации -->
+        <div class="content-section active" id="sec-news">
+            <div class="section-header"><h2>🔥 Рекомендации</h2><p>Популярные видео</p></div>
+            <div class="video-grid" id="recommendedGrid"></div>
+        </div>
+
+        <!-- Мой каталог -->
+        <div class="content-section" id="sec-releases">
+            <div class="section-header"><h2>📁 Мой каталог</h2><p>Ваши видео</p></div>
+            <div class="video-grid" id="catalogGrid"></div>
+        </div>
+
+        <!-- Добавить видео -->
+        <div class="content-section" id="sec-distribution">
+            <div class="section-header"><h2>🎬 Загрузка видео</h2><p>Заполните форму</p></div>
+            <div style="display:flex;gap:24px;max-width:1000px;margin:0 auto;align-items:flex-start;">
+                <div style="flex:1;background:#1a1a1a;border:1px solid #333;border-radius:20px;padding:2rem;">
+                    <form id="videoUploadForm" enctype="multipart/form-data" onsubmit="return uploadVideo(event)">
+                        <div style="margin-bottom:1.2rem;"><label style="display:block;color:#999;font-size:0.9rem;margin-bottom:6px;">Название <span style="color:#ef4444;">*</span></label><input type="text" id="videoTitle" required placeholder="Введите название" style="width:100%;padding:12px;background:#0d0d0d;border:1px solid #333;border-radius:14px;color:#fff;outline:none;"></div>
+                        <div style="margin-bottom:1.2rem;"><label style="display:block;color:#999;font-size:0.9rem;margin-bottom:6px;">Описание</label><textarea id="videoDescription" rows="4" placeholder="Расскажите о видео..." style="width:100%;padding:12px;background:#0d0d0d;border:1px solid #333;border-radius:14px;color:#fff;outline:none;resize:vertical;"></textarea></div>
+                        <div style="margin-bottom:1.2rem;"><label style="display:block;color:#999;font-size:0.9rem;margin-bottom:6px;">Язык <span style="color:#ef4444;">*</span></label><select id="videoLanguage" required style="width:100%;padding:12px;background:#0d0d0d;border:1px solid #333;border-radius:14px;color:#fff;outline:none;cursor:pointer;"><option value="">Выберите язык</option><option value="russian">🇷🇺 Русский</option><option value="english">🇬🇧 English</option></select></div>
+                        <div style="margin-bottom:1.2rem;"><label style="display:block;color:#999;font-size:0.9rem;margin-bottom:6px;">Файл видео <span style="color:#ef4444;">*</span></label><div onclick="document.getElementById('videoFile').click()" style="border:2px dashed #333;border-radius:16px;padding:2rem;text-align:center;background:#0d0d0d;cursor:pointer;"><i class="fas fa-cloud-upload-alt" style="font-size:2.5rem;color:#7c3aed;margin-bottom:10px;"></i><p style="color:#999;">Нажмите для выбора MP4</p><input type="file" id="videoFile" accept=".mp4,video/mp4" required style="display:none;" onchange="showVideoInfo(this)"></div><div id="videoFileInfo" style="margin-top:8px;font-size:0.85rem;color:#999;"></div></div>
+                        <button type="submit" style="width:100%;padding:14px;background:#7c3aed;color:#fff;border:none;border-radius:14px;font-weight:600;font-size:1rem;cursor:pointer;"><i class="fas fa-upload"></i> Загрузить</button>
+                    </form>
+                </div>
+                <div style="width:320px;flex-shrink:0;background:#1a1a1a;border:1px solid #333;border-radius:20px;padding:1.5rem;">
+                    <label style="display:block;color:#999;font-size:0.9rem;margin-bottom:12px;">Обложка <span style="color:#ef4444;">*</span></label><p style="color:#555;font-size:0.8rem;margin-bottom:12px;">JPG/PNG, 1280×720</p>
+                    <div id="coverPreview" onclick="document.getElementById('coverFile').click()" style="width:100%;aspect-ratio:16/9;background:#0d0d0d;border:2px dashed #333;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;overflow:hidden;cursor:pointer;"><div style="text-align:center;color:#555;"><i class="fas fa-image" style="font-size:2.5rem;"></i><br>1280×720</div></div>
+                    <input type="file" id="coverFile" accept=".jpg,.jpeg,.png" required style="display:none;" onchange="showCoverPreview(this)">
+                    <div id="coverFileInfo" style="font-size:0.8rem;color:#999;text-align:center;"></div>
+                    <button onclick="document.getElementById('coverFile').click()" style="width:100%;padding:10px;margin-top:8px;background:#262626;color:#fff;border:1px solid #333;border-radius:10px;cursor:pointer;"><i class="fas fa-folder-open"></i> Выбрать обложку</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Проверка видео -->
+        <div class="content-section" id="sec-moderation">
+            <div class="section-header"><h2>🛡️ Проверка видео</h2><p>Модерация</p></div>
+            <div id="moderationAccessDenied" style="display:none;text-align:center;padding:3rem;background:#1a1a1a;border:1px solid #333;border-radius:16px;"><i class="fas fa-lock" style="font-size:3rem;color:#555;"></i><h3 style="color:#fff;">Нет доступа</h3><p style="color:#999;">Только администратор и модератор</p></div>
+            <div id="moderationContent"><div class="moderation-grid" id="moderationGrid"></div></div>
+        </div>
+
+        <!-- Админ-панель (только просмотр пользователей) -->
+        <div class="content-section" id="sec-adminUsers">
+            <div class="section-header"><h2>👥 Все пользователи</h2><p>Список зарегистрированных пользователей</p></div>
+            <div id="adminAccessDenied" style="display:none;text-align:center;padding:3rem;background:#1a1a1a;border:1px solid #333;border-radius:16px;"><i class="fas fa-lock" style="font-size:3rem;color:#555;"></i><h3 style="color:#fff;">Нет доступа</h3><p style="color:#999;">Только администратор</p></div>
+            <div id="adminContent">
+                <div style="display:flex;gap:8px;margin-bottom:1rem;">
+                    <button id="filterAll" onclick="renderUsersList('all')" style="padding:8px 16px;background:#7c3aed;color:#fff;border:none;border-radius:20px;cursor:pointer;font-weight:600;">Все</button>
+                    <button id="filterOnline" onclick="renderUsersList('online')" style="padding:8px 16px;background:#262626;color:#fff;border:1px solid #333;border-radius:20px;cursor:pointer;">🟢 Онлайн</button>
+                    <button id="filterOffline" onclick="renderUsersList('offline')" style="padding:8px 16px;background:#262626;color:#fff;border:1px solid #333;border-radius:20px;cursor:pointer;">🔴 Офлайн</button>
+                    <span id="totalUsersCount" style="color:#999;margin-left:auto;align-self:center;"></span>
+                </div>
+                <div id="usersList" style="background:#1a1a1a;border:1px solid #333;border-radius:16px;padding:1rem;max-height:500px;overflow-y:auto;"><p style="color:#555;text-align:center;">Загрузка...</p></div>
+            </div>
+        </div>
+
+        <div class="content-section" id="sec-statistics"><div class="section-header"><h2>📈 Статистика</h2></div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;"><div class="info-card" style="text-align:center;"><div style="font-size:2rem;font-weight:700;color:#7c3aed;" id="statTotal">0</div><div style="color:#999;">Видео</div></div><div class="info-card" style="text-align:center;"><div style="font-size:2rem;font-weight:700;color:#10b981;" id="statApproved">0</div><div style="color:#999;">Одобрено</div></div><div class="info-card" style="text-align:center;"><div style="font-size:2rem;font-weight:700;color:#f59e0b;" id="statPending">0</div><div style="color:#999;">На проверке</div></div><div class="info-card" style="text-align:center;"><div style="font-size:2rem;font-weight:700;color:#a78bfa;" id="statUsers">0</div><div style="color:#999;">Пользователей</div></div></div></div>
+        <div class="content-section" id="sec-contract"><div class="section-header"><h2>📄 Договор</h2></div><div class="info-card"><p>1. Maxtube обеспечивает хостинг. 2. Автор сохраняет права. 3. Видео проходят модерацию.</p></div></div>
+        <div class="content-section" id="sec-support"><div class="section-header"><h2>💬 Чат</h2></div><div class="chat-container"><div class="chat-users"><h4>Онлайн</h4><div id="onlineUsers"></div></div><div class="chat-main"><div class="chat-messages" id="chatMessages"></div><div class="chat-input-area"><input type="text" id="chatInput" placeholder="Сообщение..." onkeypress="if(event.key==='Enter')sendMessage()"><button class="btn" onclick="sendMessage()">➤</button></div></div></div></div>
+    </main>
+</div>
+
+<!-- Модальное окно входа/регистрации -->
+<div class="modal-overlay" id="authModal">
+    <div class="modal">
+        <div style="display:flex;gap:8px;margin-bottom:1.5rem;border-bottom:2px solid #333;">
+            <button id="tabLogin" onclick="switchAuthTab('login')" style="flex:1;padding:10px;background:none;border:none;color:#7c3aed;border-bottom:3px solid #7c3aed;font-weight:600;cursor:pointer;">Вход</button>
+            <button id="tabRegister" onclick="switchAuthTab('register')" style="flex:1;padding:10px;background:none;border:none;color:#999;border-bottom:3px solid transparent;font-weight:600;cursor:pointer;">Регистрация</button>
+        </div>
+        <!-- Форма входа -->
+        <div id="loginForm">
+            <h3 style="color:#fff;margin-bottom:1rem;">Вход в аккаунт</h3>
+            <input type="email" id="loginEmail" placeholder="Email" style="width:100%;padding:12px;margin-bottom:12px;background:#0d0d0d;border:1px solid #333;border-radius:12px;color:#fff;outline:none;">
+            <input type="password" id="loginPassword" placeholder="Пароль" style="width:100%;padding:12px;margin-bottom:16px;background:#0d0d0d;border:1px solid #333;border-radius:12px;color:#fff;outline:none;">
+            <button class="btn" onclick="login()" style="width:100%;padding:14px;">Войти</button>
+        </div>
+        <!-- Форма регистрации -->
+        <div id="registerForm" style="display:none;">
+            <h3 style="color:#fff;margin-bottom:1rem;">Регистрация</h3>
+            <input type="text" id="regName" placeholder="Имя" style="width:100%;padding:12px;margin-bottom:12px;background:#0d0d0d;border:1px solid #333;border-radius:12px;color:#fff;outline:none;">
+            <input type="email" id="regEmail" placeholder="Email" style="width:100%;padding:12px;margin-bottom:12px;background:#0d0d0d;border:1px solid #333;border-radius:12px;color:#fff;outline:none;">
+            <input type="password" id="regPassword" placeholder="Пароль (мин. 6 символов)" style="width:100%;padding:12px;margin-bottom:16px;background:#0d0d0d;border:1px solid #333;border-radius:12px;color:#fff;outline:none;">
+            <button class="btn" onclick="register()" style="width:100%;padding:14px;">Зарегистрироваться</button>
+        </div>
+    </div>
+</div>
+
+<!-- ВИДЕОПЛЕЕР С КАСТОМНЫМИ КОНТРОЛЯМИ -->
+<div id="videoPlayerModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.97);z-index:10000;align-items:center;justify-content:center;" onclick="closeVideoPlayer(event)">
+    <div class="player-container" style="position:relative;width:95%;max-width:1100px;background:#0d0d0d;border-radius:16px;overflow:hidden;box-shadow:0 25px 80px rgba(0,0,0,0.9);" onclick="event.stopPropagation()">
+
+        <!-- Кнопка закрытия -->
+        <button class="close-player-btn" onclick="closePlayer()" style="position:absolute;top:12px;right:12px;z-index:20;background:rgba(0,0,0,0.8);color:#fff;border:none;width:42px;height:42px;border-radius:50%;cursor:pointer;font-size:1.3rem;display:flex;align-items:center;justify-content:center;transition:all 0.2s;">✕</button>
+
+        <!-- Область видео -->
+        <div class="player-video-area" id="playerVideoArea" style="position:relative;background:#000;cursor:pointer;">
+            <video id="modalVideoPlayer" style="width:100%;display:block;max-height:70vh;outline:none;" playsinline>
+                <source src="" type="video/mp4">
+            </video>
+
+            <!-- Большая кнопка Play по центру -->
+            <div class="big-center-play" id="bigPlayBtn" onclick="togglePlayPause()" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:80px;height:80px;background:rgba(124,58,237,0.8);border:3px solid #fff;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:10;opacity:0;transition:all 0.3s ease;">
+                <i class="fas fa-play" style="color:#fff;font-size:2.5rem;margin-left:5px;"></i>
+            </div>
+
+            <!-- Индикатор загрузки -->
+            <div class="loading-spinner" id="loadingSpinner" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:50px;height:50px;border:3px solid rgba(255,255,255,0.2);border-top-color:#7c3aed;border-radius:50%;animation:spin 0.8s linear infinite;z-index:5;display:none;"></div>
+
+            <!-- Панель управления -->
+            <div class="custom-controls" id="customControls" style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,0.9));padding:40px 16px 12px;opacity:0;transition:opacity 0.3s ease;z-index:10;">
+
+                <!-- Полоса прогресса -->
+                <div class="progress-bar-container" id="progressBar" style="width:100%;height:6px;background:rgba(255,255,255,0.2);border-radius:4px;cursor:pointer;margin-bottom:12px;position:relative;transition:height 0.2s;">
+                    <div class="progress-buffered" id="progressBuffered" style="position:absolute;top:0;left:0;height:100%;background:rgba(255,255,255,0.3);border-radius:4px;z-index:1;width:0%;"></div>
+                    <div class="progress-filled" id="progressFilled" style="position:absolute;top:0;left:0;height:100%;background:#7c3aed;border-radius:4px;z-index:2;width:0%;"></div>
+                    <div class="progress-thumb" id="progressThumb" style="position:absolute;top:50%;transform:translate(-50%,-50%);width:16px;height:16px;background:#7c3aed;border:3px solid #fff;border-radius:50%;z-index:3;display:none;left:0%;"></div>
+                </div>
+
+                <!-- Кнопки управления -->
+                <div style="display:flex;align-items:center;gap:12px;">
+                    <!-- Play/Pause -->
+                    <button class="control-btn play-pause" id="playPauseBtn" onclick="togglePlayPause()" style="background:rgba(124,58,237,0.8);border:none;color:#fff;width:50px;height:50px;border-radius:50%;cursor:pointer;font-size:1.3rem;display:flex;align-items:center;justify-content:center;transition:all 0.2s;">
+                        <i class="fas fa-play" id="playPauseIcon"></i>
+                    </button>
+
+                    <!-- Stop -->
+                    <button class="control-btn" onclick="stopVideo()" style="background:none;border:none;color:#fff;width:42px;height:42px;border-radius:50%;cursor:pointer;font-size:1.2rem;display:flex;align-items:center;justify-content:center;transition:all 0.2s;">
+                        <i class="fas fa-stop"></i>
+                    </button>
+
+                    <!-- Следующий трек -->
+                    <button class="control-btn" onclick="skipVideo(10)" style="background:none;border:none;color:#fff;width:42px;height:42px;border-radius:50%;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:all 0.2s;">
+                        <i class="fas fa-forward"></i>
+                    </button>
+
+                    <!-- Время -->
+                    <span class="time-display" style="color:#fff;font-size:0.85rem;font-weight:500;">
+                        <span id="currentTime">0:00</span>
+                        <span style="color:#999;"> / </span>
+                        <span id="totalTime">0:00</span>
+                    </span>
+
+                    <div style="flex:1;"></div>
+
+                    <!-- Громкость -->
+                    <div class="volume-container" style="display:flex;align-items:center;gap:4px;">
+                        <button class="control-btn" id="volumeBtn" onclick="toggleMute()" style="background:none;border:none;color:#fff;width:42px;height:42px;border-radius:50%;cursor:pointer;font-size:1.1rem;display:flex;align-items:center;justify-content:center;">
+                            <i class="fas fa-volume-up" id="volumeIcon"></i>
+                        </button>
+                        <div class="volume-slider" style="width:0;overflow:hidden;transition:width 0.3s;display:flex;align-items:center;">
+                            <input type="range" id="volumeSlider" min="0" max="100" value="100" oninput="setVolume(this.value)" style="width:80px;height:4px;background:rgba(255,255,255,0.3);border-radius:2px;outline:none;cursor:pointer;">
+                        </div>
+                    </div>
+
+                    <!-- На весь экран -->
+                    <button class="control-btn fullscreen-btn" onclick="toggleFullscreen()" style="background:none;border:none;color:#fff;width:42px;height:42px;border-radius:50%;cursor:pointer;font-size:1.1rem;display:flex;align-items:center;justify-content:center;transition:all 0.2s;">
+                        <i class="fas fa-expand"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Информационная панель -->
+        <div style="padding:20px 24px;background:#0d0d0d;border-top:1px solid #222;">
+            <h3 id="modalVideoTitle" style="color:#fff;font-size:1.3rem;font-weight:700;margin-bottom:12px;"></h3>
+            <div style="display:flex;align-items:center;gap:24px;flex-wrap:wrap;">
+                <div style="display:flex;align-items:center;gap:12px;">
+                    <div id="modalAuthorAvatar" style="width:40px;height:40px;background:linear-gradient(135deg,#7c3aed,#a78bfa);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:1rem;">?</div>
+                    <span id="modalAuthorName" style="color:#fff;font-weight:600;"></span>
+                </div>
+                <span id="modalVideoInfo" style="color:#999;font-size:0.9rem;"></span>
+                <div style="margin-left:auto;display:flex;gap:10px;">
+                    <button class="like-btn" id="likeBtn" onclick="toggleLike()" style="display:flex;align-items:center;gap:8px;padding:10px 20px;background:#1a1a1a;border:1px solid #333;border-radius:25px;color:#fff;cursor:pointer;font-size:0.9rem;transition:all 0.2s;">
+                        <i class="fas fa-thumbs-up"></i> <span id="likeCount">0</span>
+                    </button>
+                    <button onclick="shareVideo()" style="display:flex;align-items:center;gap:8px;padding:10px 20px;background:#1a1a1a;border:1px solid #333;border-radius:25px;color:#fff;cursor:pointer;font-size:0.9rem;transition:all 0.2s;">
+                        <i class="fas fa-share"></i> Поделиться
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// ===== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ =====
+let userDatabase = JSON.parse(localStorage.getItem('userDatabase') || '[]');
+let currentUser = JSON.parse(localStorage.getItem('currentSession') || 'null');
+let chatMessages = JSON.parse(localStorage.getItem('chatMessages') || '[]');
+let videos = JSON.parse(localStorage.getItem('videos') || '[]');
+let onlineUsers_list = new Set(JSON.parse(localStorage.getItem('onlineUsers') || '[]'));
+let heartbeatInterval;
+let currentFilter = 'all';
+const DELETE_TIMEOUT = 60000;
+const MAX_MESSAGES = 100;
+const ADMIN_EMAIL = 'maks3888d@gmail.com';
+
+function saveUsers() { localStorage.setItem('userDatabase', JSON.stringify(userDatabase)); }
+function findUser(email) { return userDatabase.find(u => u.email.toLowerCase() === email.toLowerCase()); }
+function saveChat() { localStorage.setItem('chatMessages', JSON.stringify(chatMessages)); }
+function saveVideos() { localStorage.setItem('videos', JSON.stringify(videos)); }
+function saveSession() { localStorage.setItem('currentSession', JSON.stringify(currentUser)); }
+
+// ===== ВИДЕОПЛЕЕР =====
+function playVideo(videoId) { const video = videos.find(v => v.id === videoId); if (!video || !video.videoURL) { alert('Видео недоступно'); return; } document.getElementById('modalVideoPlayer').src = video.videoURL; document.getElementById('modalVideoTitle').textContent = video.title; document.getElementById('modalVideoInfo').textContent = `${video.author} · ${video.language} · ${video.views || 0} просмотров`; document.getElementById('videoPlayerModal').style.display = 'flex'; document.getElementById('modalVideoPlayer').load(); document.getElementById('modalVideoPlayer').play(); video.views = (video.views || 0) + 1; saveVideos(); }
+function closeVideoPlayer(event) { if (event.target === document.getElementById('videoPlayerModal')) { document.getElementById('videoPlayerModal').style.display = 'none'; document.getElementById('modalVideoPlayer').pause(); document.getElementById('modalVideoPlayer').src = ''; } }
+
+// ===== ОНЛАЙН/ОФЛАЙН =====
+function setUserOnline(email) { if(!email)return; onlineUsers_list.add(email); localStorage.setItem('onlineUsers',JSON.stringify([...onlineUsers_list])); const u=findUser(email); if(u){u.lastSeen=new Date().toISOString();u.isOnline=true;saveUsers();} }
+function setUserOffline(email) { if(!email)return; onlineUsers_list.delete(email); localStorage.setItem('onlineUsers',JSON.stringify([...onlineUsers_list])); const u=findUser(email); if(u){u.lastSeen=new Date().toISOString();u.isOnline=false;saveUsers();} }
+function checkOnlineStatus() { const s=JSON.parse(localStorage.getItem('onlineUsers')||'[]'); onlineUsers_list=new Set(s); const n=Date.now(); userDatabase.forEach(u=>{if(u.lastSeen&&(n-new Date(u.lastSeen).getTime())>30000){u.isOnline=false;onlineUsers_list.delete(u.email);}}); saveUsers(); localStorage.setItem('onlineUsers',JSON.stringify([...onlineUsers_list])); }
+function startHeartbeat() { if(heartbeatInterval)clearInterval(heartbeatInterval); heartbeatInterval=setInterval(()=>{if(currentUser)setUserOnline(currentUser.email);},10000); }
+window.addEventListener('beforeunload',()=>{if(currentUser)setUserOffline(currentUser.email);});
+function cleanDeleted() { const n=Date.now(); chatMessages=chatMessages.filter(m=>!(m.deleted&&m.deletedAt&&(n-m.deletedAt)>DELETE_TIMEOUT)); saveChat(); }
+function logout() { if(currentUser){setUserOffline(currentUser.email);} if(heartbeatInterval)clearInterval(heartbeatInterval); currentUser=null; localStorage.removeItem('currentSession'); updateUIForLoggedUser(); }
+
+// ===== НАВИГАЦИЯ =====
+function switchSection(section) {
+    document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+    document.querySelectorAll('.content-section').forEach(s=>s.classList.remove('active'));
+    const map={news:'sec-news',releases:'sec-releases',distribution:'sec-distribution',moderation:'sec-moderation',adminUsers:'sec-adminUsers',statistics:'sec-statistics',contract:'sec-contract',support:'sec-support'};
+    document.getElementById(map[section]).classList.add('active');
+    const clicked=event?.target?.closest('.nav-item'); if(clicked)clicked.classList.add('active');
+    if(section==='news')renderRecommended();
+    if(section==='releases')renderCatalog();
+    if(section==='moderation'){if(!currentUser||(!currentUser.isAdmin&&!currentUser.isModerator)){document.getElementById('moderationAccessDenied').style.display='block';document.getElementById('moderationContent').style.display='none';}else{document.getElementById('moderationAccessDenied').style.display='none';document.getElementById('moderationContent').style.display='block';renderModeration();}}
+    if(section==='adminUsers'){if(!currentUser||!currentUser.isAdmin){document.getElementById('adminAccessDenied').style.display='block';document.getElementById('adminContent').style.display='none';}else{document.getElementById('adminAccessDenied').style.display='none';document.getElementById('adminContent').style.display='block';renderUsersList('all');}}
+    if(section==='statistics')renderStatistics();
+    if(section==='support')renderChat();
+}
+
+// ===== АВТОРИЗАЦИЯ =====
+function openAuthModal() { if(currentUser){if(confirm(`Вы: ${currentUser.email}\nВыйти?`))logout();return;} document.getElementById('authModal').style.display='flex'; document.getElementById('loginEmail').focus(); }
+function closeAuthModal() { document.getElementById('authModal').style.display='none'; ['loginEmail','loginPassword','regName','regEmail','regPassword'].forEach(id=>document.getElementById(id).value=''); }
+function switchAuthTab(tab) {
+    document.getElementById('tabLogin').style.color=tab==='login'?'#7c3aed':'#999';
+    document.getElementById('tabLogin').style.borderBottomColor=tab==='login'?'#7c3aed':'transparent';
+    document.getElementById('tabRegister').style.color=tab==='register'?'#7c3aed':'#999';
+    document.getElementById('tabRegister').style.borderBottomColor=tab==='register'?'#7c3aed':'transparent';
+    document.getElementById('loginForm').style.display=tab==='login'?'block':'none';
+    document.getElementById('registerForm').style.display=tab==='register'?'block':'none';
+}
+function login() {
+    const email=document.getElementById('loginEmail').value.trim().toLowerCase();
+    const password=document.getElementById('loginPassword').value;
+    if(!email||!password){alert('Заполните все поля');return;}
+    if(email===ADMIN_EMAIL&&password==='admin123'){currentUser={id:'admin',name:'Администратор',email,password,isAdmin:true,role:'admin'};if(!findUser(email)){userDatabase.push(currentUser);saveUsers();}saveSession();setUserOnline(email);startHeartbeat();closeAuthModal();updateUIForLoggedUser();return;}
+    const user=findUser(email);
+    if(!user){alert('Пользователь не найден');return;}
+    if(user.password!==password){alert('Неверный пароль');return;}
+    currentUser=user; saveSession(); setUserOnline(email); startHeartbeat(); closeAuthModal(); updateUIForLoggedUser();
+}
+function register() {
+    const name=document.getElementById('regName').value.trim();
+    const email=document.getElementById('regEmail').value.trim().toLowerCase();
+    const password=document.getElementById('regPassword').value;
+    if(!name||!email||!password){alert('Заполните все поля');return;}
+    if(password.length<6){alert('Минимум 6 символов');return;}
+    if(!email.includes('@')){alert('Некорректный email');return;}
+    if(findUser(email)){alert('Email уже используется');return;}
+    currentUser={id:'user-'+Date.now(),name,email,password,isAdmin:false,role:'user',isOnline:true,lastSeen:new Date().toISOString()};
+    userDatabase.push(currentUser); saveUsers(); saveSession(); setUserOnline(email); startHeartbeat(); closeAuthModal(); updateUIForLoggedUser();
+    alert(`Добро пожаловать, ${name}!`);
+}
+function updateUIForLoggedUser() {
+    const btn=document.getElementById('headerLoginBtn');
+    const sf=document.getElementById('sidebarUserCard');
+    if(currentUser){btn.innerHTML=`<i class="fas fa-user"></i> ${currentUser.name}`;btn.onclick=()=>{if(confirm('Выйти?'))logout();};const av=currentUser.name.charAt(0).toUpperCase();sf.innerHTML=`<div class="user-avatar">${av}</div><div><div class="user-name">${currentUser.name}</div><div class="user-email">${currentUser.email}</div></div>`;sf.onclick=()=>{if(confirm('Выйти?'))logout();};
+        document.querySelectorAll('.nav-item').forEach(item=>{const t=item.textContent.trim();if(t.includes('Проверка видео'))item.style.display=(currentUser.isAdmin||currentUser.isModerator)?'flex':'none';if(t.includes('Админ-панель'))item.style.display=currentUser.isAdmin?'flex':'none';});
+        renderChat();
+    }else{btn.innerHTML='Вход';btn.onclick=openAuthModal;sf.innerHTML='<div class="user-avatar">?</div><div><div class="user-name">Гость</div><div class="user-email">Не авторизован</div></div>';sf.onclick=openAuthModal;document.querySelectorAll('.nav-item').forEach(item=>item.style.display='flex');}
+}
+
+// ===== ВИДЕО =====
+function showVideoInfo(input){const f=input.files[0];if(!f)return;if(!f.name.toLowerCase().endsWith('.mp4')){document.getElementById('videoFileInfo').innerHTML='<span style="color:#ef4444;">Только MP4!</span>';input.value='';return;}document.getElementById('videoFileInfo').innerHTML=`<span style="color:#10b981;">✅ ${f.name} (${(f.size/1024/1024).toFixed(1)} MB)</span>`;}
+function showCoverPreview(input){const f=input.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{document.getElementById('coverPreview').innerHTML=`<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;">`;document.getElementById('coverFileInfo').innerHTML='<span style="color:#10b981;">✅ Готово</span>';};r.readAsDataURL(f);}
+function uploadVideo(e){
+    e.preventDefault(); if(!currentUser){alert('Войдите!');return false;}
+    const title=document.getElementById('videoTitle').value.trim(),lang=document.getElementById('videoLanguage').value,vf=document.getElementById('videoFile').files[0],cf=document.getElementById('coverFile').files[0];
+    if(!title||!lang||!vf||!cf){alert('Заполните все поля');return false;}
+    const videoURL=URL.createObjectURL(vf);
+    const reader=new FileReader();
+    reader.onload=function(ev){videos.push({id:Date.now(),title,description:document.getElementById('videoDescription').value,language:lang==='russian'?'Русский':'English',coverURL:ev.target.result,videoURL,author:currentUser.name,authorEmail:currentUser.email,status:'pending',views:0,createdAt:new Date().toISOString()});saveVideos();alert('Видео отправлено на проверку!');e.target.reset();document.getElementById('coverPreview').innerHTML='<div style="text-align:center;color:#555;"><i class="fas fa-image" style="font-size:2.5rem;"></i><br>1280×720</div>';document.getElementById('videoFileInfo').innerHTML='';document.getElementById('coverFileInfo').innerHTML='';renderCatalog();renderModeration();renderStatistics();};
+    reader.readAsDataURL(cf); return false;
+}
+
+// ===== ВИДЕОПЛЕЕР: КАСТОМНЫЕ КОНТРОЛЫ =====
+let currentVideoData = null;
+
+function playVideo(videoId) {
+    const video = videos.find(v => v.id === videoId);
+    if (!video || !video.videoURL) { alert('Видео недоступно'); return; }
+
+    currentVideoData = video;
+    const modal = document.getElementById('videoPlayerModal');
+    const player = document.getElementById('modalVideoPlayer');
+
+    player.src = video.videoURL;
+    document.getElementById('modalVideoTitle').textContent = video.title;
+    document.getElementById('modalVideoInfo').textContent = `${video.views || 0} просмотров · ${video.language}`;
+    document.getElementById('modalAuthorName').textContent = video.author;
+    document.getElementById('modalAuthorAvatar').textContent = video.author.charAt(0).toUpperCase();
+    document.getElementById('likeCount').textContent = video.likes || 0;
+
+    modal.style.display = 'flex';
+    player.load();
+    player.play();
+
+    video.views = (video.views || 0) + 1;
+    saveVideos();
+
+    updatePlayPauseIcon(true);
+}
+
+function closePlayer() {
+    const player = document.getElementById('modalVideoPlayer');
+    player.pause();
+    document.getElementById('videoPlayerModal').style.display = 'none';
+    currentVideoData = null;
+}
+
+function closeVideoPlayer(event) {
+    if (event.target === document.getElementById('videoPlayerModal')) {
+        closePlayer();
+    }
+}
+
+function togglePlayPause() {
+    const player = document.getElementById('modalVideoPlayer');
+    if (player.paused) {
+        player.play();
+    } else {
+        player.pause();
+    }
+    updatePlayPauseIcon(!player.paused);
+}
+
+function stopVideo() {
+    const player = document.getElementById('modalVideoPlayer');
+    player.pause();
+    player.currentTime = 0;
+    updatePlayPauseIcon(false);
+}
+
+function skipVideo(seconds) {
+    const player = document.getElementById('modalVideoPlayer');
+    player.currentTime = Math.min(player.duration, player.currentTime + seconds);
+}
+
+function setVolume(value) {
+    const player = document.getElementById('modalVideoPlayer');
+    player.volume = value / 100;
+    updateVolumeIcon(value);
+}
+
+function toggleMute() {
+    const player = document.getElementById('modalVideoPlayer');
+    player.muted = !player.muted;
+    updateVolumeIcon(player.muted ? 0 : player.volume * 100);
+}
+
+function toggleFullscreen() {
+    const container = document.querySelector('.player-video-area');
+    if (document.fullscreenElement) {
+        document.exitFullscreen();
+    } else {
+        container.requestFullscreen();
+    }
+}
+
+function toggleLike() {
+    if (!currentVideoData) return;
+    currentVideoData.likes = (currentVideoData.likes || 0) + 1;
+    document.getElementById('likeCount').textContent = currentVideoData.likes;
+    document.getElementById('likeBtn').classList.add('liked');
+    document.getElementById('likeBtn').style.background = 'rgba(124,58,237,0.2)';
+    document.getElementById('likeBtn').style.borderColor = '#7c3aed';
+    document.getElementById('likeBtn').style.color = '#7c3aed';
+    saveVideos();
+}
+
+function shareVideo() {
+    if (!currentVideoData) return;
+    const text = `Смотри "${currentVideoData.title}" на Maxtube!`;
+    if (navigator.share) {
+        navigator.share({ title: currentVideoData.title, text: text });
+    } else {
+        navigator.clipboard?.writeText(text);
+        alert('Ссылка скопирована!');
+    }
+}
+
+function updatePlayPauseIcon(isPlaying) {
+    const icon = document.getElementById('playPauseIcon');
+    const bigBtn = document.getElementById('bigPlayBtn');
+    const bigIcon = bigBtn.querySelector('i');
+
+    if (isPlaying) {
+        icon.className = 'fas fa-pause';
+        bigIcon.className = 'fas fa-pause';
+        bigBtn.style.opacity = '0';
+        document.querySelector('.player-video-area').classList.remove('paused');
+    } else {
+        icon.className = 'fas fa-play';
+        bigIcon.className = 'fas fa-play';
+        bigBtn.style.opacity = '1';
+        document.querySelector('.player-video-area').classList.add('paused');
+    }
+}
+
+function updateVolumeIcon(value) {
+    const icon = document.getElementById('volumeIcon');
+    if (value == 0) {
+        icon.className = 'fas fa-volume-mute';
+    } else if (value < 50) {
+        icon.className = 'fas fa-volume-down';
+    } else {
+        icon.className = 'fas fa-volume-up';
+    }
+}
+
+// Обновление прогресса
+const player = document.getElementById('modalVideoPlayer');
+
+player.addEventListener('timeupdate', function() {
+    const percent = (player.currentTime / player.duration) * 100 || 0;
+    document.getElementById('progressFilled').style.width = percent + '%';
+    document.getElementById('progressThumb').style.left = percent + '%';
+    document.getElementById('currentTime').textContent = formatTime(player.currentTime);
+
+    // Буферизация
+    if (player.buffered.length > 0) {
+        const buffered = (player.buffered.end(player.buffered.length - 1) / player.duration) * 100;
+        document.getElementById('progressBuffered').style.width = buffered + '%';
+    }
+});
+
+player.addEventListener('loadedmetadata', function() {
+    document.getElementById('totalTime').textContent = formatTime(player.duration);
+});
+
+player.addEventListener('play', function() { updatePlayPauseIcon(true); });
+player.addEventListener('pause', function() { updatePlayPauseIcon(false); });
+player.addEventListener('waiting', function() { document.getElementById('loadingSpinner').style.display = 'block'; });
+player.addEventListener('canplay', function() { document.getElementById('loadingSpinner').style.display = 'none'; });
+
+// Клик по полосе прогресса
+document.getElementById('progressBar').addEventListener('click', function(e) {
+    const rect = this.getBoundingClientRect();
+    const percent = (e.clientX - rect.left) / rect.width;
+    player.currentTime = percent * player.duration;
+});
+
+// Показ контролов при движении мыши
+let controlsTimeout;
+document.getElementById('playerVideoArea').addEventListener('mousemove', function() {
+    document.getElementById('customControls').style.opacity = '1';
+    clearTimeout(controlsTimeout);
+    controlsTimeout = setTimeout(() => {
+        if (!player.paused) {
+            document.getElementById('customControls').style.opacity = '0';
+        }
+    }, 3000);
+});
+
+// Показ ползунка громкости
+document.querySelector('.volume-container').addEventListener('mouseenter', function() {
+    this.querySelector('.volume-slider').style.width = '80px';
+});
+document.querySelector('.volume-container').addEventListener('mouseleave', function() {
+    this.querySelector('.volume-slider').style.width = '0';
+});
+
+function formatTime(seconds) {
+    if (isNaN(seconds)) return '0:00';
+    const m = Math.floor(seconds / 60);
+    const s = Math.floor(seconds % 60);
+    return m + ':' + (s < 10 ? '0' : '') + s;
+}
+
+
+function renderVideoCard(v,showPlay=true){return `<div class="video-card" ${showPlay&&v.videoURL?`onclick="playVideo(${v.id})" style="cursor:pointer;"`:''}><div class="video-thumb" style="position:relative;">${v.coverURL?`<img src="${v.coverURL}">`:'<div class="no-thumb"><i class="fas fa-video" style="font-size:3rem;"></i></div>'}${showPlay&&v.videoURL?`<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.3);opacity:0;transition:opacity 0.3s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0'"><div style="width:60px;height:60px;background:rgba(0,0,0,0.8);border-radius:50%;display:flex;align-items:center;justify-content:center;"><i class="fas fa-play" style="color:#fff;font-size:1.5rem;margin-left:3px;"></i></div></div>`:''}</div><div class="video-info"><h3>${v.title}</h3><p>${v.description?.substring(0,60)||''}</p><div class="video-meta"><span><i class="fas fa-user"></i> ${v.author}</span><span><i class="fas fa-globe"></i> ${v.language}</span>${v.views?`<span><i class="fas fa-eye"></i> ${v.views}</span>`:''}</div></div></div>`;}
+function renderRecommended(){const g=document.getElementById('recommendedGrid');const a=videos.filter(v=>v.status==='approved');g.innerHTML=a.length===0?'<p style="color:#555;text-align:center;padding:2rem;">Нет рекомендованных видео</p>':a.map(v=>renderVideoCard(v,true)).join('');}
+function renderCatalog(){const g=document.getElementById('catalogGrid');const u=currentUser?videos.filter(v=>v.authorEmail===currentUser.email):[];g.innerHTML=u.length===0?'<p style="color:#555;text-align:center;padding:2rem;">У вас пока нет видео</p>':u.map(v=>renderVideoCard(v,true)).join('');}
+function renderModeration(){const g=document.getElementById('moderationGrid');if(!g)return;g.innerHTML=videos.length===0?'<p style="color:#555;text-align:center;padding:2rem;">Нет видео</p>':videos.map(v=>`<div class="moderation-card"><div style="display:flex;gap:12px;align-items:flex-start;"><div class="video-thumb" style="width:160px;aspect-ratio:16/9;flex-shrink:0;cursor:pointer;border-radius:8px;overflow:hidden;position:relative;" onclick="playVideo(${v.id})">${v.coverURL?`<img src="${v.coverURL}">`:'<div class="no-thumb"><i class="fas fa-video"></i></div>'}<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.3);"><i class="fas fa-play" style="color:#fff;font-size:1.2rem;"></i></div></div><div style="flex:1;"><h4>${v.title}</h4><p style="color:#999;font-size:0.85rem;">${v.author} · ${v.language} · ${v.views||0} просмотров</p><span class="status status-${v.status==='approved'?'approved':v.status==='rejected'?'rejected':'pending'}">${v.status==='approved'?'Одобрено':v.status==='rejected'?'Отклонено':'На проверке'}</span><div class="moderation-actions">${v.status!=='approved'?`<button class="btn-approve" onclick="event.stopPropagation();moderateVideo(${v.id},'approved')">Одобрить</button>`:''}${v.status!=='rejected'?`<button class="btn-reject" onclick="event.stopPropagation();moderateVideo(${v.id},'rejected')">Отклонить</button>`:''}</div></div></div></div>`).join('');}
+window.moderateVideo=function(id,status){const v=videos.find(v=>v.id===id);if(v){v.status=status;saveVideos();renderModeration();renderRecommended();renderStatistics();}};
+function renderStatistics(){document.getElementById('statTotal')&&(document.getElementById('statTotal').textContent=videos.length);document.getElementById('statApproved')&&(document.getElementById('statApproved').textContent=videos.filter(v=>v.status==='approved').length);document.getElementById('statPending')&&(document.getElementById('statPending').textContent=videos.filter(v=>v.status==='pending').length);document.getElementById('statUsers')&&(document.getElementById('statUsers').textContent=userDatabase.length);}
+
+// ===== ПРОСМОТР ПОЛЬЗОВАТЕЛЕЙ (только чтение) =====
+function renderUsersList(filter){
+    currentFilter=filter||'all';
+    const c=document.getElementById('usersList');
+    if(!c)return;
+    document.getElementById('totalUsersCount').textContent=`Всего: ${userDatabase.length}`;
+    ['filterAll','filterOnline','filterOffline'].forEach(id=>{const btn=document.getElementById(id);if(btn){btn.style.background='#262626';btn.style.color='#fff';btn.style.border='1px solid #333';}});
+    const activeMap={all:'filterAll',online:'filterOnline',offline:'filterOffline'};
+    const activeBtn=document.getElementById(activeMap[filter]);
+    if(activeBtn){activeBtn.style.background='#7c3aed';activeBtn.style.color='#fff';activeBtn.style.border='1px solid #7c3aed';}
+    let filtered=userDatabase;
+    if(filter==='online')filtered=userDatabase.filter(u=>onlineUsers_list.has(u.email));
+    else if(filter==='offline')filtered=userDatabase.filter(u=>!onlineUsers_list.has(u.email));
+    if(filtered.length===0){c.innerHTML='<p style="color:#555;text-align:center;padding:2rem;">Нет пользователей</p>';return;}
+    c.innerHTML=filtered.map(u=>{
+        const isOnline=onlineUsers_list.has(u.email);
+        const lastSeen=u.lastSeen?new Date(u.lastSeen).toLocaleString('ru-RU'):'Никогда';
+        const roleLabel=u.role==='admin'?'Админ':u.role==='moderator'?'Модер':'Польз.';
+        const roleColor=u.role==='admin'?'#a78bfa':u.role==='moderator'?'#f59e0b':'#10b981';
+        return`<div style="display:flex;align-items:center;gap:12px;padding:14px;border-bottom:1px solid #262626;"><div style="position:relative;"><div style="width:44px;height:44px;background:${isOnline?'#7c3aed':'#333'};border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;">${u.name.charAt(0).toUpperCase()}</div><div style="position:absolute;bottom:0;right:0;width:14px;height:14px;background:${isOnline?'#10b981':'#666'};border-radius:50%;border:2px solid #1a1a1a;"></div></div><div style="flex:1;"><div style="display:flex;align-items:center;gap:8px;"><span style="color:#fff;font-weight:600;">${u.name}</span>${u.email===currentUser?.email?'<span style="color:#7c3aed;font-size:0.75rem;">(Вы)</span>':''}<span style="background:${roleColor}20;color:${roleColor};padding:2px 8px;border-radius:10px;font-size:0.7rem;font-weight:600;">${roleLabel}</span></div><div style="color:#999;font-size:0.8rem;">${u.email}</div><div style="color:#666;font-size:0.7rem;">${isOnline?'🟢 Онлайн':'🔴 Офлайн'} · ${lastSeen}</div></div></div>`;
+    }).join('');
+}
+
+// ===== ЧАТ =====
+function sendMessage(){if(!currentUser){alert('Войдите!');return;}const text=document.getElementById('chatInput').value.trim();if(!text||text.length>500)return;chatMessages.push({id:Date.now(),userName:currentUser.name,userEmail:currentUser.email,isAdmin:currentUser.isAdmin,text,timestamp:new Date().toISOString(),edited:false,deleted:false});if(chatMessages.length>MAX_MESSAGES)chatMessages=chatMessages.slice(-MAX_MESSAGES);saveChat();document.getElementById('chatInput').value='';renderChat();}
+function deleteMessage(id){const msg=chatMessages.find(m=>m.id===id);if(!msg||!currentUser||(msg.userEmail!==currentUser.email&&!currentUser.isAdmin))return;if(confirm('Удалить?')){msg.deleted=true;msg.deletedAt=Date.now();saveChat();renderChat();setTimeout(()=>{cleanDeleted();renderChat();},DELETE_TIMEOUT+1000);}}
+function editMessage(id){const msg=chatMessages.find(m=>m.id===id);if(!msg||msg.deleted||!currentUser||(msg.userEmail!==currentUser.email&&!currentUser.isAdmin))return;const t=prompt('Редактировать:',msg.text);if(t&&t.trim()){msg.text=t.trim();msg.edited=true;saveChat();renderChat();}}
+function renderChat(){const c=document.getElementById('chatMessages');if(!c)return;cleanDeleted();if(chatMessages.length===0){c.innerHTML='<p style="color:#555;text-align:center;padding:2rem;">Нет сообщений</p>';updateOnlineUsers();return;}c.innerHTML='';chatMessages.forEach((msg,i)=>{const isMy=currentUser&&msg.userEmail===currentUser.email;const isAdmin=msg.isAdmin||msg.userEmail===ADMIN_EMAIL;const time=new Date(msg.timestamp).toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'});const av=msg.userName.charAt(0).toUpperCase();const can=currentUser&&(msg.userEmail===currentUser.email||currentUser.isAdmin);const prev=i>0?chatMessages[i-1]:null;const grouped=prev&&prev.userEmail===msg.userEmail&&!prev.deleted&&!msg.deleted;const w=document.createElement('div');w.className=`msg ${isMy?'my':''}`;w.style.cssText=`display:flex;gap:8px;margin-bottom:8px;align-items:flex-end;${isMy?'justify-content:flex-end;':''}`;w.innerHTML=`${!isMy?`<div class="msg-avatar" style="background:${isAdmin?'#7c3aed':'#333'};">${av}</div>`:''}<div style="${isMy?'text-align:right;':''}max-width:fit-content;min-width:60px;">${!isMy&&!grouped?`<div style="font-size:0.8rem;color:#7c3aed;margin-bottom:3px;">${msg.userName}${isAdmin?' 👑':''}</div>`:''}${msg.deleted?`<div class="msg-bubble" style="background:#1a1a1a;border:1px dashed #333;color:#666;">Удалено</div>`:`<div class="msg-bubble">${msg.text}</div>${msg.edited?'<div style="font-size:0.7rem;color:#a78bfa;">ред.</div>':''}`}<div class="msg-time">${time}</div>${can?`<div style="margin-top:3px;"><button onclick="editMessage(${msg.id})" style="background:none;border:none;color:#999;cursor:pointer;">✎</button><button onclick="deleteMessage(${msg.id})" style="background:none;border:none;color:#999;cursor:pointer;">✕</button></div>`:''}</div>${isMy?`<div class="msg-avatar" style="background:#7c3aed;">${av}</div>`:''}`;c.appendChild(w);});c.scrollTop=c.scrollHeight;updateOnlineUsers();}
+function updateOnlineUsers(){const d=document.getElementById('onlineUsers');if(!d)return;const u=currentUser?[{name:currentUser.name,isAdmin:currentUser.isAdmin,isYou:true}]:[];const s=new Set();chatMessages.filter(m=>!m.deleted).slice(-30).forEach(m=>{if(m.userEmail!==currentUser?.email&&!s.has(m.userEmail)){s.add(m.userEmail);u.push({name:m.userName,isAdmin:m.isAdmin,isYou:false});}});d.innerHTML=u.length===0?'<p style="color:#555;">Нет</p>':u.map(x=>`<div style="color:#e0e0e0;padding:4px 0;">🟢 ${x.name}${x.isAdmin?' 👑':''}${x.isYou?' (Вы)':''}</div>`).join('');}
+
+// ===== ИНИЦИАЛИЗАЦИЯ =====
+cleanDeleted();
+document.getElementById('authModal').addEventListener('click',function(e){if(e.target===this)closeAuthModal();});
+setInterval(()=>{cleanDeleted();renderChat();},15000);
+setInterval(checkOnlineStatus,15000);
+updateUIForLoggedUser();
+checkOnlineStatus();
+if(currentUser){setUserOnline(currentUser.email);startHeartbeat();}
+renderRecommended();
+renderStatistics();
+</script>
+</body>
+</html>
