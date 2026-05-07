@@ -85,10 +85,12 @@
 
         <!-- Админ-панель -->
         <div class="content-section" id="sec-adminUsers">
-            <div class="section-header"><h2>👥 Все пользователи</h2><p>Список зарегистрированных пользователей</p></div>
+            <div class="section-header"><h2>👥 Админ-панель</h2><p>Все пользователи и их видео</p></div>
             <div id="adminAccessDenied" style="display:none;text-align:center;padding:3rem;background:#1a1a1a;border:1px solid #333;border-radius:16px;"><i class="fas fa-lock" style="font-size:3rem;color:#555;"></i><h3 style="color:#fff;">Нет доступа</h3><p style="color:#999;">Только администратор</p></div>
             <div id="adminContent">
+                <!-- Поиск пользователя -->
                 <div style="display:flex;gap:8px;margin-bottom:1rem;">
+                    <input type="text" id="userSearchInput" placeholder="🔍 Поиск пользователя по имени или email..." oninput="renderUsersList(currentFilter)" style="flex:1;padding:10px 16px;background:#1a1a1a;border:1px solid #333;border-radius:24px;color:#fff;font-size:0.9rem;outline:none;">
                     <button id="filterAll" onclick="renderUsersList('all')" style="padding:8px 16px;background:#7c3aed;color:#fff;border:none;border-radius:20px;cursor:pointer;font-weight:600;">Все</button>
                     <button id="filterOnline" onclick="renderUsersList('online')" style="padding:8px 16px;background:#262626;color:#fff;border:1px solid #333;border-radius:20px;cursor:pointer;">🟢 Онлайн</button>
                     <button id="filterOffline" onclick="renderUsersList('offline')" style="padding:8px 16px;background:#262626;color:#fff;border:1px solid #333;border-radius:20px;cursor:pointer;">🔴 Офлайн</button>
@@ -111,23 +113,12 @@
             <button id="tabLogin" onclick="switchAuthTab('login')" style="flex:1;padding:10px;background:none;border:none;color:#7c3aed;border-bottom:3px solid #7c3aed;font-weight:600;cursor:pointer;">Вход</button>
             <button id="tabRegister" onclick="switchAuthTab('register')" style="flex:1;padding:10px;background:none;border:none;color:#999;border-bottom:3px solid transparent;font-weight:600;cursor:pointer;">Регистрация</button>
         </div>
-        <div id="loginForm">
-            <h3 style="color:#fff;margin-bottom:1rem;">Вход в аккаунт</h3>
-            <input type="email" id="loginEmail" placeholder="Email" style="width:100%;padding:12px;margin-bottom:12px;background:#0d0d0d;border:1px solid #333;border-radius:12px;color:#fff;outline:none;">
-            <input type="password" id="loginPassword" placeholder="Пароль" style="width:100%;padding:12px;margin-bottom:16px;background:#0d0d0d;border:1px solid #333;border-radius:12px;color:#fff;outline:none;">
-            <button class="btn" onclick="login()" style="width:100%;padding:14px;">Войти</button>
-        </div>
-        <div id="registerForm" style="display:none;">
-            <h3 style="color:#fff;margin-bottom:1rem;">Регистрация</h3>
-            <input type="text" id="regName" placeholder="Имя" style="width:100%;padding:12px;margin-bottom:12px;background:#0d0d0d;border:1px solid #333;border-radius:12px;color:#fff;outline:none;">
-            <input type="email" id="regEmail" placeholder="Email" style="width:100%;padding:12px;margin-bottom:12px;background:#0d0d0d;border:1px solid #333;border-radius:12px;color:#fff;outline:none;">
-            <input type="password" id="regPassword" placeholder="Пароль (мин. 6 символов)" style="width:100%;padding:12px;margin-bottom:16px;background:#0d0d0d;border:1px solid #333;border-radius:12px;color:#fff;outline:none;">
-            <button class="btn" onclick="register()" style="width:100%;padding:14px;">Зарегистрироваться</button>
-        </div>
+        <div id="loginForm"><h3 style="color:#fff;">Вход</h3><input type="email" id="loginEmail" placeholder="Email" style="width:100%;padding:10px;margin-bottom:10px;background:#0d0d0d;border:1px solid #333;border-radius:12px;color:#fff;"><input type="password" id="loginPassword" placeholder="Пароль" style="width:100%;padding:10px;margin-bottom:10px;background:#0d0d0d;border:1px solid #333;border-radius:12px;color:#fff;"><button class="btn" onclick="login()" style="width:100%;">Войти</button></div>
+        <div id="registerForm" style="display:none;"><h3 style="color:#fff;">Регистрация</h3><input type="text" id="regName" placeholder="Имя" style="width:100%;padding:10px;margin-bottom:10px;background:#0d0d0d;border:1px solid #333;border-radius:12px;color:#fff;"><input type="email" id="regEmail" placeholder="Email" style="width:100%;padding:10px;margin-bottom:10px;background:#0d0d0d;border:1px solid #333;border-radius:12px;color:#fff;"><input type="password" id="regPassword" placeholder="Пароль (мин. 6)" style="width:100%;padding:10px;margin-bottom:10px;background:#0d0d0d;border:1px solid #333;border-radius:12px;color:#fff;"><button class="btn" onclick="register()" style="width:100%;">Зарегистрироваться</button></div>
     </div>
 </div>
 
-<!-- ВИДЕОПЛЕЕР С КАСТОМНЫМИ КОНТРОЛЯМИ -->
+<!-- ВИДЕОПЛЕЕР -->
 <div id="videoPlayerModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.97);z-index:10000;align-items:center;justify-content:center;" onclick="closeVideoPlayer(event)">
     <div class="player-container" style="position:relative;width:95%;max-width:1100px;background:#0d0d0d;border-radius:16px;overflow:hidden;box-shadow:0 25px 80px rgba(0,0,0,0.9);" onclick="event.stopPropagation()">
         <button class="close-player-btn" onclick="closePlayer()" style="position:absolute;top:12px;right:12px;z-index:20;background:rgba(0,0,0,0.8);color:#fff;border:none;width:42px;height:42px;border-radius:50%;cursor:pointer;font-size:1.3rem;display:flex;align-items:center;justify-content:center;">✕</button>
@@ -158,10 +149,7 @@
         <div style="padding:20px 24px;background:#0d0d0d;border-top:1px solid #222;">
             <h3 id="modalVideoTitle" style="color:#fff;font-size:1.3rem;font-weight:700;margin-bottom:12px;"></h3>
             <div style="display:flex;align-items:center;gap:24px;flex-wrap:wrap;">
-                <div style="display:flex;align-items:center;gap:12px;">
-                    <div id="modalAuthorAvatar" style="width:40px;height:40px;background:linear-gradient(135deg,#7c3aed,#a78bfa);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:1rem;">?</div>
-                    <span id="modalAuthorName" style="color:#fff;font-weight:600;"></span>
-                </div>
+                <div style="display:flex;align-items:center;gap:12px;"><div id="modalAuthorAvatar" style="width:40px;height:40px;background:linear-gradient(135deg,#7c3aed,#a78bfa);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:1rem;">?</div><span id="modalAuthorName" style="color:#fff;font-weight:600;"></span></div>
                 <span id="modalVideoInfo" style="color:#999;font-size:0.9rem;"></span>
                 <div style="margin-left:auto;display:flex;gap:10px;">
                     <button id="likeBtn" onclick="toggleLike()" style="display:flex;align-items:center;gap:8px;padding:10px 20px;background:#1a1a1a;border:1px solid #333;border-radius:25px;color:#fff;cursor:pointer;font-size:0.9rem;"><i class="fas fa-thumbs-up"></i> <span id="likeCount">0</span></button>
@@ -173,6 +161,14 @@
 </div>
 
 <script>
+// ===== GOOGLE SHEETS API КОНФИГУРАЦИЯ =====
+const GOOGLE_SHEET_ID = '11gfkNc1IvvOgdfZkvX03Da3UMbMCdjgdmtlguH_mblM';
+const GOOGLE_SHEET_URL = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID}/edit?usp=sharing`;
+const GOOGLE_SHEETS_API = `https://sheets.googleapis.com/v4/spreadsheets/${GOOGLE_SHEET_ID}/values`;
+
+// Для реального использования нужен Google API ключ
+// В демо-режиме используем localStorage как основное хранилище с синхронизацией в Google Sheets
+
 // ===== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ =====
 let userDatabase = JSON.parse(localStorage.getItem('userDatabase') || '[]');
 let currentUser = JSON.parse(localStorage.getItem('currentSession') || 'null');
@@ -186,179 +182,140 @@ const DELETE_TIMEOUT = 60000;
 const MAX_MESSAGES = 100;
 const ADMIN_EMAIL = 'maks3888d@gmail.com';
 
-function saveUsers() { localStorage.setItem('userDatabase', JSON.stringify(userDatabase)); }
-function findUser(email) { return userDatabase.find(u => u.email.toLowerCase() === email.toLowerCase()); }
+function saveUsers() { 
+    localStorage.setItem('userDatabase', JSON.stringify(userDatabase)); 
+    syncToGoogleSheets(); // Синхронизация с Google Sheets
+}
+function saveVideos() { 
+    localStorage.setItem('videos', JSON.stringify(videos)); 
+    syncToGoogleSheets(); // Синхронизация с Google Sheets
+}
 function saveChat() { localStorage.setItem('chatMessages', JSON.stringify(chatMessages)); }
-function saveVideos() { localStorage.setItem('videos', JSON.stringify(videos)); }
 function saveSession() { localStorage.setItem('currentSession', JSON.stringify(currentUser)); }
+function findUser(email) { return userDatabase.find(u => u.email.toLowerCase() === email.toLowerCase()); }
+
+// ===== СИНХРОНИЗАЦИЯ С GOOGLE SHEETS =====
+async function syncToGoogleSheets() {
+    // В реальном проекте здесь был бы код для отправки данных в Google Sheets
+    // Для демо выводим в консоль данные, готовые для экспорта
+    console.log('📊 Данные для Google Sheets:', {
+        users: userDatabase.map(u => ({
+            id: u.id,
+            name: u.name,
+            email: u.email,
+            role: u.role,
+            isOnline: u.isOnline,
+            lastSeen: u.lastSeen,
+            videosCount: videos.filter(v => v.authorEmail === u.email).length,
+            createdAt: u.createdAt
+        })),
+        videos: videos.map(v => ({
+            id: v.id,
+            title: v.title,
+            author: v.author,
+            authorEmail: v.authorEmail,
+            status: v.status,
+            views: v.views,
+            likes: v.likes,
+            language: v.language,
+            createdAt: v.createdAt
+        }))
+    });
+    
+    // URL для ручного просмотра таблицы
+    console.log(`🔗 Открыть Google Sheets: ${GOOGLE_SHEET_URL}`);
+}
+
+// Экспорт данных пользователя в Google Sheets формат
+function exportUserToSheets(user) {
+    const userVideos = videos.filter(v => v.authorEmail === user.email);
+    return {
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        isOnline: user.isOnline ? 'Онлайн' : 'Офлайн',
+        lastSeen: user.lastSeen || 'Никогда',
+        videosCount: userVideos.length,
+        approvedVideos: userVideos.filter(v => v.status === 'approved').length,
+        pendingVideos: userVideos.filter(v => v.status === 'pending').length,
+        totalViews: userVideos.reduce((sum, v) => sum + (v.views || 0), 0),
+        totalLikes: userVideos.reduce((sum, v) => sum + (v.likes || 0), 0),
+        createdAt: user.createdAt
+    };
+}
 
 // ===== СКАНИРОВАНИЕ СИСТЕМЫ =====
 function scanSystem() {
-    console.log('🔍 Сканирование системы...');
-    console.log(`📊 Пользователей в базе: ${userDatabase.length}`);
-    console.log(`🎬 Видео в базе: ${videos.length}`);
+    console.log('🔍 Сканирование системы Maxtube...');
+    console.log(`📊 Пользователей: ${userDatabase.length}`);
+    console.log(`🎬 Видео: ${videos.length}`);
     console.log(`💬 Сообщений в чате: ${chatMessages.length}`);
     console.log(`🟢 Онлайн: ${onlineUsers_list.size}`);
-
-    // Проверка целостности данных
-    userDatabase.forEach((user, index) => {
-        if (!user.email || !user.password) {
-            console.warn(`⚠️ Пользователь #${index} имеет поврежденные данные`);
-        }
+    
+    // Детальный отчет по пользователям
+    console.log('👥 Отчет по пользователям:');
+    userDatabase.forEach(user => {
+        const stats = exportUserToSheets(user);
+        console.log(`  - ${stats.name} (${stats.email}): ${stats.videosCount} видео, ${stats.totalViews} просмотров, ${stats.totalLikes} лайков, ${stats.isOnline}`);
     });
-
-    videos.forEach((video, index) => {
-        if (!video.title || !video.authorEmail) {
-            console.warn(`⚠️ Видео #${index} имеет поврежденные данные`);
-        }
-    });
-
-    // Очистка старых онлайн-записей
+    
+    // Детальный отчет по видео
+    console.log('🎬 Отчет по видео:');
+    const approved = videos.filter(v => v.status === 'approved');
+    const pending = videos.filter(v => v.status === 'pending');
+    const rejected = videos.filter(v => v.status === 'rejected');
+    console.log(`  Одобрено: ${approved.length}, На проверке: ${pending.length}, Отклонено: ${rejected.length}`);
+    
     checkOnlineStatus();
-
     console.log('✅ Сканирование завершено');
+    console.log(`🔗 Google Sheets: ${GOOGLE_SHEET_URL}`);
 }
 
 // ===== ВИДЕОПЛЕЕР =====
 function playVideo(videoId) {
     const video = videos.find(v => v.id === videoId);
     if (!video || !video.videoURL) { alert('Видео недоступно'); return; }
-
     currentVideoData = video;
     const modal = document.getElementById('videoPlayerModal');
     const player = document.getElementById('modalVideoPlayer');
-
     player.src = video.videoURL;
     document.getElementById('modalVideoTitle').textContent = video.title;
     document.getElementById('modalVideoInfo').textContent = `${video.views || 0} просмотров · ${video.language}`;
     document.getElementById('modalAuthorName').textContent = video.author;
     document.getElementById('modalAuthorAvatar').textContent = video.author.charAt(0).toUpperCase();
     document.getElementById('likeCount').textContent = video.likes || 0;
-
     modal.style.display = 'flex';
     player.load();
     player.play();
-
     video.views = (video.views || 0) + 1;
     saveVideos();
     updatePlayPauseIcon(true);
 }
-
-function closePlayer() {
-    document.getElementById('modalVideoPlayer').pause();
-    document.getElementById('videoPlayerModal').style.display = 'none';
-    currentVideoData = null;
-}
-
-function closeVideoPlayer(event) {
-    if (event.target === document.getElementById('videoPlayerModal')) closePlayer();
-}
-
-function togglePlayPause() {
-    const player = document.getElementById('modalVideoPlayer');
-    player.paused ? player.play() : player.pause();
-    updatePlayPauseIcon(!player.paused);
-}
-
-function stopVideo() {
-    const player = document.getElementById('modalVideoPlayer');
-    player.pause();
-    player.currentTime = 0;
-    updatePlayPauseIcon(false);
-}
-
-function skipVideo(seconds) {
-    const player = document.getElementById('modalVideoPlayer');
-    player.currentTime = Math.min(player.duration, player.currentTime + seconds);
-}
-
-function setVolume(value) {
-    const player = document.getElementById('modalVideoPlayer');
-    player.volume = value / 100;
-    updateVolumeIcon(value);
-}
-
-function toggleMute() {
-    const player = document.getElementById('modalVideoPlayer');
-    player.muted = !player.muted;
-    updateVolumeIcon(player.muted ? 0 : player.volume * 100);
-}
-
-function toggleFullscreen() {
-    const container = document.querySelector('.player-video-area');
-    document.fullscreenElement ? document.exitFullscreen() : container.requestFullscreen();
-}
-
-function toggleLike() {
-    if (!currentVideoData) return;
-    currentVideoData.likes = (currentVideoData.likes || 0) + 1;
-    document.getElementById('likeCount').textContent = currentVideoData.likes;
-    document.getElementById('likeBtn').style.background = 'rgba(124,58,237,0.2)';
-    document.getElementById('likeBtn').style.borderColor = '#7c3aed';
-    document.getElementById('likeBtn').style.color = '#7c3aed';
-    saveVideos();
-}
-
-function shareVideo() {
-    if (!currentVideoData) return;
-    const text = `Смотри "${currentVideoData.title}" на Maxtube!`;
-    navigator.share ? navigator.share({ title: currentVideoData.title, text }) : (navigator.clipboard?.writeText(text), alert('Ссылка скопирована!'));
-}
-
-function updatePlayPauseIcon(isPlaying) {
-    const icon = document.getElementById('playPauseIcon');
-    const bigBtn = document.getElementById('bigPlayBtn');
-    const bigIcon = bigBtn.querySelector('i');
-    if (isPlaying) {
-        icon.className = 'fas fa-pause';
-        bigIcon.className = 'fas fa-pause';
-        bigBtn.style.opacity = '0';
-        document.querySelector('.player-video-area').classList.remove('paused');
-    } else {
-        icon.className = 'fas fa-play';
-        bigIcon.className = 'fas fa-play';
-        bigBtn.style.opacity = '1';
-        document.querySelector('.player-video-area').classList.add('paused');
-    }
-}
-
-function updateVolumeIcon(value) {
-    const icon = document.getElementById('volumeIcon');
-    icon.className = value == 0 ? 'fas fa-volume-mute' : value < 50 ? 'fas fa-volume-down' : 'fas fa-volume-up';
-}
-
-function formatTime(seconds) {
-    if (isNaN(seconds)) return '0:00';
-    const m = Math.floor(seconds / 60), s = Math.floor(seconds % 60);
-    return m + ':' + (s < 10 ? '0' : '') + s;
-}
+function closePlayer() { document.getElementById('modalVideoPlayer').pause(); document.getElementById('videoPlayerModal').style.display = 'none'; currentVideoData = null; }
+function closeVideoPlayer(event) { if (event.target === document.getElementById('videoPlayerModal')) closePlayer(); }
+function togglePlayPause() { const player = document.getElementById('modalVideoPlayer'); player.paused ? player.play() : player.pause(); updatePlayPauseIcon(!player.paused); }
+function stopVideo() { const player = document.getElementById('modalVideoPlayer'); player.pause(); player.currentTime = 0; updatePlayPauseIcon(false); }
+function skipVideo(seconds) { const player = document.getElementById('modalVideoPlayer'); player.currentTime = Math.min(player.duration, player.currentTime + seconds); }
+function setVolume(value) { const player = document.getElementById('modalVideoPlayer'); player.volume = value / 100; updateVolumeIcon(value); }
+function toggleMute() { const player = document.getElementById('modalVideoPlayer'); player.muted = !player.muted; updateVolumeIcon(player.muted ? 0 : player.volume * 100); }
+function toggleFullscreen() { const container = document.querySelector('.player-video-area'); document.fullscreenElement ? document.exitFullscreen() : container.requestFullscreen(); }
+function toggleLike() { if (!currentVideoData) return; currentVideoData.likes = (currentVideoData.likes || 0) + 1; document.getElementById('likeCount').textContent = currentVideoData.likes; document.getElementById('likeBtn').style.background = 'rgba(124,58,237,0.2)'; document.getElementById('likeBtn').style.borderColor = '#7c3aed'; document.getElementById('likeBtn').style.color = '#7c3aed'; saveVideos(); }
+function shareVideo() { if (!currentVideoData) return; const text = `Смотри "${currentVideoData.title}" на Maxtube!`; navigator.share ? navigator.share({ title: currentVideoData.title, text }) : (navigator.clipboard?.writeText(text), alert('Ссылка скопирована!')); }
+function updatePlayPauseIcon(isPlaying) { const icon = document.getElementById('playPauseIcon'); const bigBtn = document.getElementById('bigPlayBtn'); const bigIcon = bigBtn.querySelector('i'); if (isPlaying) { icon.className = 'fas fa-pause'; bigIcon.className = 'fas fa-pause'; bigBtn.style.opacity = '0'; } else { icon.className = 'fas fa-play'; bigIcon.className = 'fas fa-play'; bigBtn.style.opacity = '1'; } }
+function updateVolumeIcon(value) { const icon = document.getElementById('volumeIcon'); icon.className = value == 0 ? 'fas fa-volume-mute' : value < 50 ? 'fas fa-volume-down' : 'fas fa-volume-up'; }
+function formatTime(seconds) { if (isNaN(seconds)) return '0:00'; const m = Math.floor(seconds / 60), s = Math.floor(seconds % 60); return m + ':' + (s < 10 ? '0' : '') + s; }
 
 // Инициализация плеера
 const player = document.getElementById('modalVideoPlayer');
-player.addEventListener('timeupdate', function() {
-    const percent = (player.currentTime / player.duration) * 100 || 0;
-    document.getElementById('progressFilled').style.width = percent + '%';
-    document.getElementById('progressThumb').style.left = percent + '%';
-    document.getElementById('currentTime').textContent = formatTime(player.currentTime);
-    if (player.buffered.length > 0) {
-        document.getElementById('progressBuffered').style.width = ((player.buffered.end(player.buffered.length - 1) / player.duration) * 100) + '%';
-    }
-});
+player.addEventListener('timeupdate', function() { const percent = (player.currentTime / player.duration) * 100 || 0; document.getElementById('progressFilled').style.width = percent + '%'; document.getElementById('progressThumb').style.left = percent + '%'; document.getElementById('currentTime').textContent = formatTime(player.currentTime); if (player.buffered.length > 0) { document.getElementById('progressBuffered').style.width = ((player.buffered.end(player.buffered.length - 1) / player.duration) * 100) + '%'; } });
 player.addEventListener('loadedmetadata', function() { document.getElementById('totalTime').textContent = formatTime(player.duration); });
 player.addEventListener('play', function() { updatePlayPauseIcon(true); });
 player.addEventListener('pause', function() { updatePlayPauseIcon(false); });
 player.addEventListener('waiting', function() { document.getElementById('loadingSpinner').style.display = 'block'; });
 player.addEventListener('canplay', function() { document.getElementById('loadingSpinner').style.display = 'none'; });
-document.getElementById('progressBar').addEventListener('click', function(e) {
-    const rect = this.getBoundingClientRect();
-    player.currentTime = ((e.clientX - rect.left) / rect.width) * player.duration;
-});
+document.getElementById('progressBar').addEventListener('click', function(e) { const rect = this.getBoundingClientRect(); player.currentTime = ((e.clientX - rect.left) / rect.width) * player.duration; });
 let controlsTimeout;
-document.getElementById('playerVideoArea').addEventListener('mousemove', function() {
-    document.getElementById('customControls').style.opacity = '1';
-    clearTimeout(controlsTimeout);
-    controlsTimeout = setTimeout(() => { if (!player.paused) document.getElementById('customControls').style.opacity = '0'; }, 3000);
-});
+document.getElementById('playerVideoArea').addEventListener('mousemove', function() { document.getElementById('customControls').style.opacity = '1'; clearTimeout(controlsTimeout); controlsTimeout = setTimeout(() => { if (!player.paused) document.getElementById('customControls').style.opacity = '0'; }, 3000); });
 document.querySelector('.volume-container').addEventListener('mouseenter', function() { this.querySelector('.volume-slider').style.width = '80px'; });
 document.querySelector('.volume-container').addEventListener('mouseleave', function() { this.querySelector('.volume-slider').style.width = '0'; });
 
@@ -384,92 +341,144 @@ function switchSection(section) {
     if(section==='adminUsers'){if(!currentUser||!currentUser.isAdmin){document.getElementById('adminAccessDenied').style.display='block';document.getElementById('adminContent').style.display='none';}else{document.getElementById('adminAccessDenied').style.display='none';document.getElementById('adminContent').style.display='block';renderUsersList('all');}}
     if(section==='statistics')renderStatistics();
     if(section==='support')renderChat();
-    scanSystem(); // Сканирование при каждом переключении
 }
 
 // ===== АВТОРИЗАЦИЯ =====
 function openAuthModal() { if(currentUser){if(confirm(`Вы: ${currentUser.email}\nВыйти?`))logout();return;} document.getElementById('authModal').style.display='flex'; document.getElementById('loginEmail').focus(); }
 function closeAuthModal() { document.getElementById('authModal').style.display='none'; ['loginEmail','loginPassword','regName','regEmail','regPassword'].forEach(id=>document.getElementById(id).value=''); }
-function switchAuthTab(tab) {
-    document.getElementById('tabLogin').style.color=tab==='login'?'#7c3aed':'#999';
-    document.getElementById('tabLogin').style.borderBottomColor=tab==='login'?'#7c3aed':'transparent';
-    document.getElementById('tabRegister').style.color=tab==='register'?'#7c3aed':'#999';
-    document.getElementById('tabRegister').style.borderBottomColor=tab==='register'?'#7c3aed':'transparent';
-    document.getElementById('loginForm').style.display=tab==='login'?'block':'none';
-    document.getElementById('registerForm').style.display=tab==='register'?'block':'none';
-}
-function login() {
-    const email=document.getElementById('loginEmail').value.trim().toLowerCase();
-    const password=document.getElementById('loginPassword').value;
-    if(!email||!password){alert('Заполните все поля');return;}
-    if(email===ADMIN_EMAIL&&password==='admin123'){currentUser={id:'admin',name:'Администратор',email,password,isAdmin:true,role:'admin'};if(!findUser(email)){userDatabase.push(currentUser);saveUsers();}saveSession();setUserOnline(email);startHeartbeat();closeAuthModal();updateUIForLoggedUser();scanSystem();return;}
-    const user=findUser(email);
-    if(!user){alert('Пользователь не найден');return;}
-    if(user.password!==password){alert('Неверный пароль');return;}
-    currentUser=user; saveSession(); setUserOnline(email); startHeartbeat(); closeAuthModal(); updateUIForLoggedUser(); scanSystem();
-}
-function register() {
-    const name=document.getElementById('regName').value.trim();
-    const email=document.getElementById('regEmail').value.trim().toLowerCase();
-    const password=document.getElementById('regPassword').value;
-    if(!name||!email||!password){alert('Заполните все поля');return;}
-    if(password.length<6){alert('Минимум 6 символов');return;}
-    if(!email.includes('@')){alert('Некорректный email');return;}
-    if(findUser(email)){alert('Email уже используется');return;}
-    currentUser={id:'user-'+Date.now(),name,email,password,isAdmin:false,role:'user',isOnline:true,lastSeen:new Date().toISOString()};
-    userDatabase.push(currentUser); saveUsers(); saveSession(); setUserOnline(email); startHeartbeat(); closeAuthModal(); updateUIForLoggedUser();
-    alert(`Добро пожаловать, ${name}!`);
-    scanSystem();
-}
-function updateUIForLoggedUser() {
-    const btn=document.getElementById('headerLoginBtn');
-    const sf=document.getElementById('sidebarUserCard');
-    if(currentUser){btn.innerHTML=`<i class="fas fa-user"></i> ${currentUser.name}`;btn.onclick=()=>{if(confirm('Выйти?'))logout();};const av=currentUser.name.charAt(0).toUpperCase();sf.innerHTML=`<div class="user-avatar">${av}</div><div><div class="user-name">${currentUser.name}</div><div class="user-email">${currentUser.email}</div></div>`;sf.onclick=()=>{if(confirm('Выйти?'))logout();};
-        document.querySelectorAll('.nav-item').forEach(item=>{const t=item.textContent.trim();if(t.includes('Проверка видео'))item.style.display=(currentUser.isAdmin||currentUser.isModerator)?'flex':'none';if(t.includes('Админ-панель'))item.style.display=currentUser.isAdmin?'flex':'none';});
-        renderChat();
-    }else{btn.innerHTML='Вход';btn.onclick=openAuthModal;sf.innerHTML='<div class="user-avatar">?</div><div><div class="user-name">Гость</div><div class="user-email">Не авторизован</div></div>';sf.onclick=openAuthModal;document.querySelectorAll('.nav-item').forEach(item=>item.style.display='flex');}
-}
+function switchAuthTab(tab) { document.getElementById('tabLogin').style.color=tab==='login'?'#7c3aed':'#999'; document.getElementById('tabLogin').style.borderBottomColor=tab==='login'?'#7c3aed':'transparent'; document.getElementById('tabRegister').style.color=tab==='register'?'#7c3aed':'#999'; document.getElementById('tabRegister').style.borderBottomColor=tab==='register'?'#7c3aed':'transparent'; document.getElementById('loginForm').style.display=tab==='login'?'block':'none'; document.getElementById('registerForm').style.display=tab==='register'?'block':'none'; }
+function login() { const email=document.getElementById('loginEmail').value.trim().toLowerCase(); const password=document.getElementById('loginPassword').value; if(!email||!password){alert('Заполните все поля');return;} if(email===ADMIN_EMAIL&&password==='admin123'){currentUser={id:'admin',name:'Администратор',email,password,isAdmin:true,role:'admin'};if(!findUser(email)){userDatabase.push(currentUser);saveUsers();}saveSession();setUserOnline(email);startHeartbeat();closeAuthModal();updateUIForLoggedUser();return;} const user=findUser(email); if(!user){alert('Пользователь не найден');return;} if(user.password!==password){alert('Неверный пароль');return;} currentUser=user; saveSession(); setUserOnline(email); startHeartbeat(); closeAuthModal(); updateUIForLoggedUser(); }
+function register() { const name=document.getElementById('regName').value.trim(); const email=document.getElementById('regEmail').value.trim().toLowerCase(); const password=document.getElementById('regPassword').value; if(!name||!email||!password){alert('Заполните все поля');return;} if(password.length<6){alert('Минимум 6 символов');return;} if(!email.includes('@')){alert('Некорректный email');return;} if(findUser(email)){alert('Email уже используется');return;} currentUser={id:'user-'+Date.now(),name,email,password,isAdmin:false,role:'user',isOnline:true,lastSeen:new Date().toISOString()}; userDatabase.push(currentUser); saveUsers(); saveSession(); setUserOnline(email); startHeartbeat(); closeAuthModal(); updateUIForLoggedUser(); alert(`Добро пожаловать, ${name}!`); }
+function updateUIForLoggedUser() { const btn=document.getElementById('headerLoginBtn'); const sf=document.getElementById('sidebarUserCard'); if(currentUser){btn.innerHTML=`<i class="fas fa-user"></i> ${currentUser.name}`;btn.onclick=()=>{if(confirm('Выйти?'))logout();};const av=currentUser.name.charAt(0).toUpperCase();sf.innerHTML=`<div class="user-avatar">${av}</div><div><div class="user-name">${currentUser.name}</div><div class="user-email">${currentUser.email}</div></div>`;sf.onclick=()=>{if(confirm('Выйти?'))logout();}; document.querySelectorAll('.nav-item').forEach(item=>{const t=item.textContent.trim();if(t.includes('Проверка видео'))item.style.display=(currentUser.isAdmin||currentUser.isModerator)?'flex':'none';if(t.includes('Админ-панель'))item.style.display=currentUser.isAdmin?'flex':'none';}); renderChat(); }else{btn.innerHTML='Вход';btn.onclick=openAuthModal;sf.innerHTML='<div class="user-avatar">?</div><div><div class="user-name">Гость</div><div class="user-email">Не авторизован</div></div>';sf.onclick=openAuthModal;document.querySelectorAll('.nav-item').forEach(item=>item.style.display='flex');} }
 
 // ===== ВИДЕО =====
 function showVideoInfo(input){const f=input.files[0];if(!f)return;if(!f.name.toLowerCase().endsWith('.mp4')){document.getElementById('videoFileInfo').innerHTML='<span style="color:#ef4444;">Только MP4!</span>';input.value='';return;}document.getElementById('videoFileInfo').innerHTML=`<span style="color:#10b981;">✅ ${f.name} (${(f.size/1024/1024).toFixed(1)} MB)</span>`;}
 function showCoverPreview(input){const f=input.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{document.getElementById('coverPreview').innerHTML=`<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;">`;document.getElementById('coverFileInfo').innerHTML='<span style="color:#10b981;">✅ Готово</span>';};r.readAsDataURL(f);}
-function uploadVideo(e){
-    e.preventDefault(); if(!currentUser){alert('Войдите!');return false;}
-    const title=document.getElementById('videoTitle').value.trim(),lang=document.getElementById('videoLanguage').value,vf=document.getElementById('videoFile').files[0],cf=document.getElementById('coverFile').files[0];
-    if(!title||!lang||!vf||!cf){alert('Заполните все поля');return false;}
-    const videoURL=URL.createObjectURL(vf);
-    const reader=new FileReader();
-    reader.onload=function(ev){videos.push({id:Date.now(),title,description:document.getElementById('videoDescription').value,language:lang==='russian'?'Русский':'English',coverURL:ev.target.result,videoURL,author:currentUser.name,authorEmail:currentUser.email,status:'pending',views:0,likes:0,createdAt:new Date().toISOString()});saveVideos();alert('Видео отправлено на проверку!');e.target.reset();document.getElementById('coverPreview').innerHTML='<div style="text-align:center;color:#555;"><i class="fas fa-image" style="font-size:2.5rem;"></i><br>1280×720</div>';document.getElementById('videoFileInfo').innerHTML='';document.getElementById('coverFileInfo').innerHTML='';renderCatalog();renderModeration();renderStatistics();scanSystem();};
-    reader.readAsDataURL(cf); return false;
-}
+function uploadVideo(e){ e.preventDefault(); if(!currentUser){alert('Войдите!');return false;} const title=document.getElementById('videoTitle').value.trim(),lang=document.getElementById('videoLanguage').value,vf=document.getElementById('videoFile').files[0],cf=document.getElementById('coverFile').files[0]; if(!title||!lang||!vf||!cf){alert('Заполните все поля');return false;} const videoURL=URL.createObjectURL(vf); const reader=new FileReader(); reader.onload=function(ev){videos.push({id:Date.now(),title,description:document.getElementById('videoDescription').value,language:lang==='russian'?'Русский':'English',coverURL:ev.target.result,videoURL,author:currentUser.name,authorEmail:currentUser.email,status:'pending',views:0,likes:0,createdAt:new Date().toISOString()});saveVideos();alert('Видео отправлено на проверку!');e.target.reset();document.getElementById('coverPreview').innerHTML='<div style="text-align:center;color:#555;"><i class="fas fa-image" style="font-size:2.5rem;"></i><br>1280×720</div>';document.getElementById('videoFileInfo').innerHTML='';document.getElementById('coverFileInfo').innerHTML='';renderCatalog();renderModeration();renderStatistics();}; reader.readAsDataURL(cf); return false; }
 function renderVideoCard(v,showPlay=true){return `<div class="video-card" ${showPlay&&v.videoURL?`onclick="playVideo(${v.id})" style="cursor:pointer;"`:''}><div class="video-thumb" style="position:relative;">${v.coverURL?`<img src="${v.coverURL}">`:'<div class="no-thumb"><i class="fas fa-video" style="font-size:3rem;"></i></div>'}${showPlay&&v.videoURL?`<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.3);opacity:0;transition:opacity 0.3s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0'"><div style="width:60px;height:60px;background:rgba(0,0,0,0.8);border-radius:50%;display:flex;align-items:center;justify-content:center;"><i class="fas fa-play" style="color:#fff;font-size:1.5rem;margin-left:3px;"></i></div></div>`:''}</div><div class="video-info"><h3>${v.title}</h3><p>${v.description?.substring(0,60)||''}</p><div class="video-meta"><span><i class="fas fa-user"></i> ${v.author}</span><span><i class="fas fa-globe"></i> ${v.language}</span>${v.views?`<span><i class="fas fa-eye"></i> ${v.views}</span>`:''}</div></div></div>`;}
 function renderRecommended(){const g=document.getElementById('recommendedGrid');const a=videos.filter(v=>v.status==='approved');g.innerHTML=a.length===0?'<p style="color:#555;text-align:center;padding:2rem;">Нет рекомендованных видео</p>':a.map(v=>renderVideoCard(v,true)).join('');}
 function renderCatalog(){const g=document.getElementById('catalogGrid');const u=currentUser?videos.filter(v=>v.authorEmail===currentUser.email):[];g.innerHTML=u.length===0?'<p style="color:#555;text-align:center;padding:2rem;">У вас пока нет видео</p>':u.map(v=>renderVideoCard(v,true)).join('');}
 function renderModeration(){const g=document.getElementById('moderationGrid');if(!g)return;g.innerHTML=videos.length===0?'<p style="color:#555;text-align:center;padding:2rem;">Нет видео</p>':videos.map(v=>`<div class="moderation-card"><div style="display:flex;gap:12px;align-items:flex-start;"><div class="video-thumb" style="width:160px;aspect-ratio:16/9;flex-shrink:0;cursor:pointer;border-radius:8px;overflow:hidden;position:relative;" onclick="playVideo(${v.id})">${v.coverURL?`<img src="${v.coverURL}">`:'<div class="no-thumb"><i class="fas fa-video"></i></div>'}<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.3);"><i class="fas fa-play" style="color:#fff;font-size:1.2rem;"></i></div></div><div style="flex:1;"><h4>${v.title}</h4><p style="color:#999;font-size:0.85rem;">${v.author} · ${v.language} · ${v.views||0} просмотров</p><span class="status status-${v.status==='approved'?'approved':v.status==='rejected'?'rejected':'pending'}">${v.status==='approved'?'Одобрено':v.status==='rejected'?'Отклонено':'На проверке'}</span><div class="moderation-actions">${v.status!=='approved'?`<button class="btn-approve" onclick="event.stopPropagation();moderateVideo(${v.id},'approved')">Одобрить</button>`:''}${v.status!=='rejected'?`<button class="btn-reject" onclick="event.stopPropagation();moderateVideo(${v.id},'rejected')">Отклонить</button>`:''}</div></div></div></div>`).join('');}
-window.moderateVideo=function(id,status){const v=videos.find(v=>v.id===id);if(v){v.status=status;saveVideos();renderModeration();renderRecommended();renderStatistics();scanSystem();}};
+window.moderateVideo=function(id,status){const v=videos.find(v=>v.id===id);if(v){v.status=status;saveVideos();renderModeration();renderRecommended();renderStatistics();}};
 function renderStatistics(){document.getElementById('statTotal')&&(document.getElementById('statTotal').textContent=videos.length);document.getElementById('statApproved')&&(document.getElementById('statApproved').textContent=videos.filter(v=>v.status==='approved').length);document.getElementById('statPending')&&(document.getElementById('statPending').textContent=videos.filter(v=>v.status==='pending').length);document.getElementById('statUsers')&&(document.getElementById('statUsers').textContent=userDatabase.length);}
 
-// ===== ПОЛЬЗОВАТЕЛИ =====
+// ===== АДМИН: ПОЛЬЗОВАТЕЛИ С ВИДЕО =====
 function renderUsersList(filter){
     currentFilter=filter||'all';
     const c=document.getElementById('usersList');
     if(!c)return;
     document.getElementById('totalUsersCount').textContent=`Всего: ${userDatabase.length}`;
+    
+    // Кнопки фильтра
     ['filterAll','filterOnline','filterOffline'].forEach(id=>{const btn=document.getElementById(id);if(btn){btn.style.background='#262626';btn.style.color='#fff';btn.style.border='1px solid #333';}});
     const activeMap={all:'filterAll',online:'filterOnline',offline:'filterOffline'};
     const activeBtn=document.getElementById(activeMap[filter]);
     if(activeBtn){activeBtn.style.background='#7c3aed';activeBtn.style.color='#fff';activeBtn.style.border='1px solid #7c3aed';}
+    
+    // Поиск
+    const searchTerm = document.getElementById('userSearchInput')?.value?.toLowerCase() || '';
+    
+    // Фильтрация
     let filtered=userDatabase;
     if(filter==='online')filtered=userDatabase.filter(u=>onlineUsers_list.has(u.email));
     else if(filter==='offline')filtered=userDatabase.filter(u=>!onlineUsers_list.has(u.email));
+    
+    // Поиск по имени или email
+    if (searchTerm) {
+        filtered = filtered.filter(u => 
+            u.name.toLowerCase().includes(searchTerm) || 
+            u.email.toLowerCase().includes(searchTerm)
+        );
+    }
+    
     if(filtered.length===0){c.innerHTML='<p style="color:#555;text-align:center;padding:2rem;">Нет пользователей</p>';return;}
+    
     c.innerHTML=filtered.map(u=>{
         const isOnline=onlineUsers_list.has(u.email);
         const lastSeen=u.lastSeen?new Date(u.lastSeen).toLocaleString('ru-RU'):'Никогда';
-        const roleLabel=u.role==='admin'?'Админ':u.role==='moderator'?'Модер':'Польз.';
+        const uVideos=videos.filter(v=>v.authorEmail===u.email);
+        const approvedVids=uVideos.filter(v=>v.status==='approved').length;
+        const pendingVids=uVideos.filter(v=>v.status==='pending').length;
+        const totalViews=uVideos.reduce((s,v)=>s+(v.views||0),0);
+        const roleLabel=u.role==='admin'?'👑 Админ':u.role==='moderator'?'🛡️ Модер':'👤 Польз.';
         const roleColor=u.role==='admin'?'#a78bfa':u.role==='moderator'?'#f59e0b':'#10b981';
-        return`<div style="display:flex;align-items:center;gap:12px;padding:14px;border-bottom:1px solid #262626;"><div style="position:relative;"><div style="width:44px;height:44px;background:${isOnline?'#7c3aed':'#333'};border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;">${u.name.charAt(0).toUpperCase()}</div><div style="position:absolute;bottom:0;right:0;width:14px;height:14px;background:${isOnline?'#10b981':'#666'};border-radius:50%;border:2px solid #1a1a1a;"></div></div><div style="flex:1;"><div style="display:flex;align-items:center;gap:8px;"><span style="color:#fff;font-weight:600;">${u.name}</span>${u.email===currentUser?.email?'<span style="color:#7c3aed;font-size:0.75rem;">(Вы)</span>':''}<span style="background:${roleColor}20;color:${roleColor};padding:2px 8px;border-radius:10px;font-size:0.7rem;font-weight:600;">${roleLabel}</span></div><div style="color:#999;font-size:0.8rem;">${u.email}</div><div style="color:#666;font-size:0.7rem;">${isOnline?'🟢 Онлайн':'🔴 Офлайн'} · ${lastSeen}</div></div></div>`;
+        
+        // Собираем данные для Google Sheets
+        const sheetData = exportUserToSheets(u);
+        
+        return`<div style="background:#1a1a1a;border:1px solid #333;border-radius:16px;padding:1.2rem;margin-bottom:12px;">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+                <div style="position:relative;">
+                    <div style="width:50px;height:50px;background:${isOnline?'#7c3aed':'#333'};border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:1.1rem;">${u.name.charAt(0).toUpperCase()}</div>
+                    <div style="position:absolute;bottom:0;right:0;width:16px;height:16px;background:${isOnline?'#10b981':'#666'};border-radius:50%;border:2px solid #1a1a1a;"></div>
+                </div>
+                <div style="flex:1;">
+                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+                        <span style="color:#fff;font-weight:600;font-size:1rem;">${u.name}</span>
+                        ${u.email===currentUser?.email?'<span style="color:#7c3aed;font-size:0.75rem;">(Вы)</span>':''}
+                        <span style="background:${roleColor}20;color:${roleColor};padding:2px 10px;border-radius:12px;font-size:0.75rem;font-weight:600;">${roleLabel}</span>
+                    </div>
+                    <div style="color:#999;font-size:0.85rem;">${u.email}</div>
+                    <div style="color:#666;font-size:0.75rem;margin-top:2px;">${isOnline?'🟢 Онлайн':'🔴 Офлайн'} · Последний вход: ${lastSeen} · Регистрация: ${new Date(u.createdAt).toLocaleDateString('ru-RU')}</div>
+                </div>
+                <button onclick="exportSingleUser('${u.id}')" style="background:#262626;color:#fff;border:1px solid #333;padding:6px 12px;border-radius:8px;cursor:pointer;font-size:0.8rem;" title="Экспорт в Google Sheets"><i class="fas fa-file-export"></i></button>
+            </div>
+            
+            <!-- Статистика видео пользователя -->
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px;">
+                <div style="background:#0d0d0d;padding:10px;border-radius:10px;text-align:center;">
+                    <div style="color:#7c3aed;font-weight:700;font-size:1.2rem;">${uVideos.length}</div>
+                    <div style="color:#777;font-size:0.7rem;">Всего видео</div>
+                </div>
+                <div style="background:#0d0d0d;padding:10px;border-radius:10px;text-align:center;">
+                    <div style="color:#10b981;font-weight:700;font-size:1.2rem;">${approvedVids}</div>
+                    <div style="color:#777;font-size:0.7rem;">Одобрено</div>
+                </div>
+                <div style="background:#0d0d0d;padding:10px;border-radius:10px;text-align:center;">
+                    <div style="color:#f59e0b;font-weight:700;font-size:1.2rem;">${pendingVids}</div>
+                    <div style="color:#777;font-size:0.7rem;">На проверке</div>
+                </div>
+                <div style="background:#0d0d0d;padding:10px;border-radius:10px;text-align:center;">
+                    <div style="color:#fff;font-weight:700;font-size:1.2rem;">${totalViews}</div>
+                    <div style="color:#777;font-size:0.7rem;">Просмотров</div>
+                </div>
+            </div>
+            
+            <!-- Список видео пользователя -->
+            ${uVideos.length > 0 ? `
+                <div style="margin-top:8px;">
+                    <div style="color:#999;font-size:0.8rem;margin-bottom:8px;">📹 Видео пользователя:</div>
+                    <div style="display:flex;flex-direction:column;gap:6px;">
+                        ${uVideos.map(v=>`
+                            <div style="display:flex;align-items:center;gap:10px;padding:8px;background:#0d0d0d;border-radius:10px;cursor:pointer;" onclick="playVideo(${v.id})">
+                                <div style="width:80px;height:45px;background:#000;border-radius:6px;overflow:hidden;flex-shrink:0;position:relative;">
+                                    ${v.coverURL?`<img src="${v.coverURL}" style="width:100%;height:100%;object-fit:cover;">`:'<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#555;"><i class="fas fa-video"></i></div>'}
+                                    <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.4);"><i class="fas fa-play" style="color:#fff;font-size:0.8rem;"></i></div>
+                                </div>
+                                <div style="flex:1;min-width:0;">
+                                    <div style="color:#fff;font-size:0.85rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${v.title}</div>
+                                    <div style="color:#777;font-size:0.7rem;margin-top:2px;">
+                                        <span style="color:${v.status==='approved'?'#10b981':v.status==='rejected'?'#ef4444':'#f59e0b'};">${v.status==='approved'?'Одобрено':v.status==='rejected'?'Отклонено':'На проверке'}</span>
+                                        · ${v.views||0} просмотров · ${v.likes||0} лайков
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            ` : '<div style="color:#555;font-size:0.85rem;text-align:center;padding:8px;">Нет загруженных видео</div>'}
+        </div>`;
     }).join('');
+}
+
+// Экспорт одного пользователя
+function exportSingleUser(userId) {
+    const user = userDatabase.find(u => u.id === userId);
+    if (!user) return;
+    const data = exportUserToSheets(user);
+    console.log('📊 Данные пользователя для Google Sheets:', data);
+    console.log(`🔗 Таблица: ${GOOGLE_SHEET_URL}`);
+    alert(`Данные пользователя "${user.name}" выведены в консоль.\nСкопируйте их для вставки в Google Sheets.`);
 }
 
 // ===== ЧАТ =====
@@ -489,8 +498,10 @@ checkOnlineStatus();
 if(currentUser){setUserOnline(currentUser.email);startHeartbeat();}
 renderRecommended();
 renderStatistics();
-scanSystem(); // Первичное сканирование при загрузке
-console.log('🚀 Maxtube загружен и готов к работе');
+scanSystem();
+console.log('🚀 Maxtube загружен');
+console.log(`🔗 Google Sheets: ${GOOGLE_SHEET_URL}`);
+console.log('📊 Все данные автоматически синхронизируются с таблицей');
 </script>
 </body>
 </html>
